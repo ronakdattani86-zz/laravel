@@ -37,8 +37,13 @@ class productsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(productRequest $request)
-    {
+    {           
+                $db = storage_path('database.json');
+                $datas = "[" .  rtrim(file_get_contents($db), ',') . "]";
+                $datas =  json_decode($datas);
+                $maxId=max(array_column($datas,'id'));
                 $product =  [
+                        'id' => $maxId+1,
 			'name' => $request->input('name'),
 			'quantity' => $request->input('qty'),
 			'price' => $request->input('price'),
@@ -47,9 +52,9 @@ class productsController extends Controller
 		];
                 //dd($product);
 		
-		$db = storage_path('database.json');
+		
 		file_put_contents($db, json_encode($product) . ',', FILE_APPEND);
-		$content = "[" .  rtrim(file_get_contents($db), ',') . "]";
+		//$content = "[" .  rtrim(file_get_contents($db), ',') . "]";
 		//return response()->json( $content);
                 return redirect()->route('products.index');
     }
@@ -73,7 +78,12 @@ class productsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $db = storage_path('database.json');        
+        $datas = "[" .  rtrim(file_get_contents($db), ',') . "]";
+        $datas=  json_decode($datas);
+        $formData=collect($datas)->where('id',3)->first();
+        
+       return  \View::make('products.index',compact('datas','formData'));
     }
 
     /**

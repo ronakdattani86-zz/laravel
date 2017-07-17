@@ -26,8 +26,8 @@ use Illuminate\Foundation\Http\FormRequest;
         return [
              
 			'name' => 'required',
-			'qty' => 'required',
-			'price' => 'required'
+			'qty' => 'required|min:1|numeric',
+			'price' => 'required|numeric'
         ];
     }
 }
